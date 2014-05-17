@@ -172,7 +172,7 @@
           <span class="register disabled">
             ${_("Course is full")}
           </span>
-        % elif invitation_only:
+        % elif invitation_only and not can_enroll:
           <span class="register disabled">${_("Enrollment in this course is by invitation only")}</span>
         % elif not can_enroll:
             <span class="register disabled">${_("Open Enrollment is Closed")}</span>

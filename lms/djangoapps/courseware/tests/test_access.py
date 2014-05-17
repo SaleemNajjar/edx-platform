@@ -73,7 +73,7 @@ class AccessTestCase(TestCase):
         u = Mock()
         yesterday = datetime.datetime.now(pytz.utc) - datetime.timedelta(days=1)
         tomorrow = datetime.datetime.now(pytz.utc) + datetime.timedelta(days=1)
-        c = Mock(enrollment_start=yesterday, enrollment_end=tomorrow, enrollment_domain='')
+        c = Mock(enrollment_start=yesterday, enrollment_end=tomorrow, enrollment_domain='', invitation_only=False)
 
         # User can enroll if it is between the start and end dates
         self.assertTrue(access._has_access_course_desc(u, c, 'enroll'))

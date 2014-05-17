@@ -166,11 +166,11 @@ class AboutWithClosedEnrollment(ModuleStoreTestCase):
         )
 
     def test_closed_enrollmement(self):
-
+ 
         url = reverse('about_course', args=[self.course.id])
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
         self.assertIn("Open Enrollment is Closed", resp.content)
-
+ 
         # Check that registration button is not present
         self.assertNotIn("<form id=\"class_enroll_form\" method=\"post\" data-remote=\"true\" action=\"/change_enrollment\">", resp.content)
