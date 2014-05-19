@@ -8,8 +8,6 @@ The edX LMS and Studio are instrumented to enable tracking of metrics and events
 
 The primary mechanism for tracking events is the `Event Tracking`_ API. It should be used for the vast majority of cases.
 
-The `edX Research Guide <http://edx.readthedocs.org/projects/devdata/en/latest/>`_ provides a reference for emitted events. 
-
 =================
 Event Tracking
 =================
@@ -29,7 +27,7 @@ Emitting from client-side coffee script::
     Logger.log 'some.event.name', 'foo': 'bar'
 
 .. note::
-    The deprecated ``track`` djangoapp can be used by the client-side API instead of the event-tracking library. Eventually, event-tracking will publish a client-side API of its own: when available, that API should be used instead of the ``track``-based solution. See :ref:`deprecated_api`.
+    The client-side API currently uses a deprecated library (the ``track`` djangoapp) instead of the event-tracking library. Eventually, event-tracking will publish a client-side API of its own: when available, that API should be used instead of the ``track``-based solution. See :ref:`deprecated_api`.
 
 Naming Events
 ==============
@@ -58,16 +56,26 @@ Sensitive Information
 
 By default, event information is written to an unencrypted file on disk. Therefore, do not include clear text passwords, credit card numbers, or other similarly sensitive information.
 
-Documenting Events
-==================
-
-As part of your effort, consider including comments that identify the purpose of the events you add. A description can assure that members of the open edX community and researchers understand your intent and use the event correctly.
-
-
 Size
 ======
 
 A cursory effort to regulate the size of the event is appreciated. If an event is too large, it may be omitted from the event stream. However, do not sacrifice the clarity of an event in an attempt to minimize size. It is much more important that the event is clear.
+
+Debugging Events
+=================
+
+On devstack, emitted events are stored in the ``/edx/var/log/tracking.log`` log
+file. This file can be useful for validation and debugging.
+
+Documenting Events
+*******************
+
+The `edX Research Guide <http://edx.readthedocs.org/projects/devdata/en/latest/>`_ includes reference information for emitted events. 
+
+As part of your effort to add events to the platform, consider including
+comments that identify the purpose of the events and the fields emitted for
+them. A description can assure that researchers and other members of the open
+edX community understand your intent and use the event correctly.
 
 Request Context Middleware
 **********************************
