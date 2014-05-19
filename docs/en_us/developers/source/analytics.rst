@@ -70,7 +70,9 @@ file. This file can be useful for validation and debugging.
 Documenting Events
 *******************
 
-The `edX Research Guide <http://edx.readthedocs.org/projects/devdata/en/latest/>`_ includes reference information for emitted events. 
+The `edX Research Guide
+<http://edx.readthedocs.org/projects/devdata/en/latest/>`_ includes reference
+information for emitted events that are included in tracking logs.
 
 As part of your effort to add events to the platform, consider including
 comments that identify the purpose of the events and the fields emitted for
