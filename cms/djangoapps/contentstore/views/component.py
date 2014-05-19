@@ -280,12 +280,19 @@ def _get_component_templates(course):
     def create_template_dict(name, cat, boilerplate_name=None, is_common=False):
         """
         Creates a component template dict.
+
+        Parameters
+            display_name: the user-visible name of the component
+            category: the type of component (problem, html, etc.)
+            boilerplate_name: name of boilerplate for filling in default values. May be None.
+            is_common: True if "common" problem, False if "advanced". May be None, as it is only used for problems.
+
         """
         return {
             "display_name": name,
             "category": cat,
-            "is_common": is_common,
-            "boilerplate_name": boilerplate_name
+            "boilerplate_name": boilerplate_name,
+            "is_common": is_common
         }
 
     component_templates = []
@@ -344,6 +351,10 @@ def _get_component_templates(course):
                     # not exist on the server. This code here merely
                     # prevents any authors from trying to instantiate the
                     # non-existent component type by not showing it in the menu
+                    log.warning(
+                        "Advanced component %s does not exist. It will not be added to the Studio new component menu.",
+                        category
+                    )
                     pass
     else:
         log.error(
