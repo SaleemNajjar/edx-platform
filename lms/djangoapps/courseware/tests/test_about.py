@@ -11,6 +11,8 @@ from .helpers import LoginEnrollmentTestCase
 from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase
 from courseware.tests.modulestore_config import TEST_DATA_MIXED_MODULESTORE
 from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory
+from courseware.tests.factories import CourseEnrollmentAllowedFactory
+from student.tests.factories import UserFactory
 
 
 @override_settings(MODULESTORE=TEST_DATA_MIXED_MODULESTORE)
@@ -139,6 +141,21 @@ class AboutWithInvitationOnly(ModuleStoreTestCase):
 
         # Check that registration button is not present
         self.assertNotIn("<form id=\"class_enroll_form\" method=\"post\" data-remote=\"true\" action=\"/change_enrollment\">", resp.content)
+
+    def test_invitation_only_but_allowed(self):
+
+        # Course is invitation only, student is allowed to enroll and logged in
+        user = UserFactory.create(username='allowed_student', password='test', email='allowed_student@test.com')
+        CourseEnrollmentAllowedFactory(email=user.email, course_id=self.course.id)
+        self.client.login(username=user.username, password='test')
+
+        url = reverse('about_course', args=[self.course.id])
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn("Register for 999", resp.content)
+
+        # Check that registration button is present
+        self.assertIn("<form id=\"class_enroll_form\" method=\"post\" data-remote=\"true\" action=\"/change_enrollment\">", resp.content)
 
 
 @override_settings(MODULESTORE=TEST_DATA_MIXED_MODULESTORE)

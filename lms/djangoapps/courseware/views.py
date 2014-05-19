@@ -593,15 +593,18 @@ def course_about(request, course_id):
 
     # Is enrollment allowed
     can_enroll = has_access(request.user, course, 'enroll')
-    
+
     # Is course invitation only
     invitation_only = course.invitation_only
 
     # see if we have already filled up all allowed enrollments
     is_course_full = CourseEnrollment.is_course_full(course)
 
-    # If enrollment disallowed, for whatever reason, don't include the form and submit button.
-    active_reg_button = not(registered or is_course_full or (invitation_only and not can_enroll) or not can_enroll)
+    # Register button should be disabled if one of the following is true:
+    # - Student is already registered for course
+    # - Course is already full
+    # - Student cannot enroll in course
+    active_reg_button = not(registered or is_course_full or not can_enroll)
 
     return render_to_response('courseware/course_about.html', {
         'course': course,
@@ -613,7 +616,7 @@ def course_about(request, course_id):
         'in_cart': in_cart,
         'reg_then_add_to_cart_link': reg_then_add_to_cart_link,
         'show_courseware_link': show_courseware_link,
-        'is_course_full': is_course_full,
+        'is_course_full': is_course_full,  # Used to provide context to message if enrollment not allowed
         'can_enroll': can_enroll,  # Used to provide context to message if enrollment not allowed
         'invitation_only': invitation_only,  # Used to provide context to message if enrollment not allowed
         'active_reg_button': active_reg_button,
