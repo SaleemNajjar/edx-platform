@@ -65,25 +65,30 @@ def xblock_has_studio_page(xblock):
     not have their own page but are instead shown on the page of their parent. There
     are a few exceptions:
       1. Courses
-      2. Verticals that are considered unit pages, i.e. are parented beneath a sequential
+      2. Verticals that either:
+        - are directly parented beneath a sequential (so are shown on a unit page)
+        - are a direct child of a unit page (where they are shown on a container page)
       3. XBlocks with children, except for:
-          - subsections (aka sequential blocks)
-          - chapters
+        - subsections (aka sequential blocks)
+        - chapters
     """
     category = xblock.category
-    if category == 'course':
-        return True
-    elif category in ('sequential', 'chapter'):
-        return False
 
-    # Only verticals beneath a sequential are given their own page
+    # Verticals have their own page if one of the following is true:
+    # a) They are directly parented beneath a sequential
+    # b) They are the child of vertical that is itself parented beneath a sequential
     if category == 'vertical':
         parent_xblock = get_parent_xblock(xblock)
-        if parent_xblock:
-            parent_category = parent_xblock.category
-        else:
-            parent_category = None
-        return parent_category == 'sequential'
+        parent_category = parent_xblock.category if parent_xblock else None
+        if parent_category == 'sequential':
+            return True
+        elif parent_category == 'vertical':
+            grandparent_xblock = get_parent_xblock(parent_xblock)
+            grandparent_category = grandparent_xblock.category if grandparent_xblock else None
+            return grandparent_category == 'sequential'
+        return False
+    elif category in ('sequential', 'chapter'):
+        return False
 
     # All other xblocks with children have their own page
     return xblock.has_children
@@ -97,10 +102,7 @@ def xblock_studio_url(xblock, course=None):
         return None
     category = xblock.category
     parent_xblock = get_parent_xblock(xblock)
-    if parent_xblock:
-        parent_category = parent_xblock.category
-    else:
-        parent_category = None
+    parent_category = parent_xblock.category if parent_xblock else None
     if category == 'course':
         prefix = 'course'
     elif category == 'vertical' and parent_category == 'sequential':
