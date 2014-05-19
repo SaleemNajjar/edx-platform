@@ -1,0 +1,93 @@
+###################################
+May 20, 2014
+###################################
+
+The following information reflects what is new in the edX Platform as of May 20, 2014. See previous pages in this document for a history of changes.
+
+.. note:: 
+
+ These edX Course Staff Release Notes are always available and are updated with
+ each release of the edX Platform on `edx.org`_ and `edX Edge`_.  You can also
+ sign up for the edX Release Announcements mailing list [LINK TBP], to get an email message
+ when there is a new release. 
+
+**************************
+edX Documentation
+**************************
+
+You can access the `edX Status`_ page to get an up-to-date status for all
+services on edx.org and edX Edge. The page also includes the Twitter feed for
+@edXstatus, which the edX Operations team uses to post updates.
+
+You can access the public `edX roadmap`_ for
+details about the currently planned product direction.
+
+The following documentation is available:
+
+* `Building and Running an edX Course`_ 
+
+  You can also download the guide as a PDF from the edX Studio user interface.
+
+  Recent changes include: 
+
+  * Updated `Working with Video Components`_ to reflect UI changes.
+
+
+* `edX Data Documentation`_
+  
+  Recent changes include:
+
+  
+  
+
+* `edX Platform Developer Documentation`_
+
+   Recent changes include: 
+
+   
+  
+  
+* `edX XBlock Documentation`_
+
+
+
+*************
+edX Studio
+*************
+
+* This release introduces context-sensitive online help to Studio. You can click
+  **Help** in the upper-right corner to get more more information about the
+  Studio page you are viewing. You can also click links that are part of the UI
+  text help.
+
+  .. image:: /images/help.png
+   :alt: Online help links in Studio
+
+  A page in edX's continuously updated documentation that is related to the Studio page you were viewing opens in a new browser tab or window:
+
+  .. image:: /images/help_page.png
+   :alt: A Studio online help page
+
+
+  You can also expand the panel at the bottom of the page and use the links at
+  to access a PDF file of edX course staff documentation, as well as and other
+  Studio resources.
+
+  .. image:: /images/sock_help.png
+   :alt: Other help resources at the bottom of the Studio UI
+
+
+***************************************
+edX Learning Management System
+***************************************
+
+* 
+
+
+****************
+edX Analytics
+****************
+
+* 
+
+.. include:: links.rst
