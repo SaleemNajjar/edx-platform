@@ -195,7 +195,7 @@ def _studio_wrap_xblock(xblock, view, frag, context, display_name_only=False):
         if is_root or _studio_show_xblock_inline(xblock):
             template = 'studio_xblock_wrapper.html'
         else:
-            template = 'container_xblock_component.html'
+            template = 'studio_container_wrapper.html'
         html = render_to_string(template, template_context)
         frag = wrap_fragment(frag, html)
     return frag
