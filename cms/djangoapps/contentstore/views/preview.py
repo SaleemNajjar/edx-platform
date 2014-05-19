@@ -183,14 +183,14 @@ def _studio_wrap_xblock(xblock, view, frag, context, display_name_only=False):
         root_xblock = context.get('root_xblock')
         is_root = root_xblock and xblock.location == root_xblock.location
         locator = loc_mapper().translate_location(xblock.course_id, xblock.location, published=False)
-        is_parent_reorderable = not context['read_only'] and _is_xblock_reorderable(xblock, context)
+        is_reorderable = _is_xblock_reorderable(xblock, context)
         template_context = {
             'xblock_context': context,
             'xblock': xblock,
             'locator': locator,
             'content': frag.content,
             'is_root': is_root,
-            'is_parent_reorderable': is_parent_reorderable,
+            'is_reorderable': is_reorderable,
         }
         if is_root or _studio_show_xblock_inline(xblock):
             template = 'studio_xblock_wrapper.html'

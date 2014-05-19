@@ -363,10 +363,14 @@ define(["jquery", "underscore", "js/spec_helpers/create_sinon", "js/spec_helpers
                     });
 
                     it('does not duplicate an xblock upon failure', function () {
+                        var notificationSpy = edit_helpers.createNotificationSpy();
                         renderContainerPage(mockContainerXBlockHtml, this);
-                        duplicateComponentWithResponse(0, 500);
+                        clickDuplicate(0);
+                        edit_helpers.verifyNotificationShowing(notificationSpy, /Duplicating/);
+                        create_sinon.respondWithError(requests);
                         expectComponents(getGroupElement(), allComponentsInGroup);
                         expect(refreshXBlockSpies).not.toHaveBeenCalled();
+                        edit_helpers.verifyNotificationShowing(notificationSpy, /Duplicating/);
                     });
                 });
 

@@ -115,7 +115,8 @@ class ContainerPageTestCase(StudioPageTestCase):
         Verify that a public xblock's container preview returns the expected HTML.
         """
         self.validate_preview_html(self.vertical, 'container_preview', is_editable=False, can_add=False)
-        self.validate_preview_html(self.child_vertical, 'container_child_preview', is_editable=False, can_add=False)
+        self.validate_preview_html(self.child_vertical, 'reorderable_container_child_preview',
+                                   is_editable=False, can_add=False)
 
     def test_draft_container_preview_html(self):
         """
@@ -124,4 +125,4 @@ class ContainerPageTestCase(StudioPageTestCase):
         draft_unit = modulestore('draft').convert_to_draft(self.vertical.location)
         draft_container = modulestore('draft').convert_to_draft(self.child_vertical.location)
         self.validate_preview_html(draft_unit, 'container_preview')
-        self.validate_preview_html(draft_container, 'container_child_preview')
+        self.validate_preview_html(draft_container, 'reorderable_container_child_preview')

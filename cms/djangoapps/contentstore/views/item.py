@@ -195,6 +195,8 @@ def xblock_view_handler(request, package_id, view_name, tag=None, branch=None, v
         store = get_modulestore(old_location)
         xblock = store.get_item(old_location)
         is_read_only = _is_xblock_read_only(xblock)
+        container_views = ['container_preview', 'reorderable_container_child_preview']
+        unit_views = ['student_view']
 
         # wrap the generated fragment in the xmodule_editor div so that the javascript
         # can bind to it correctly
@@ -231,13 +233,15 @@ def xblock_view_handler(request, package_id, view_name, tag=None, branch=None, v
                 'html': html,
                 'resources': [],
             })
-        elif view_name in ('student_view', 'container_preview', 'container_child_preview'):
-            is_container_view = (view_name in ['container_preview', 'container_child_preview'])
+        elif view_name in (unit_views + container_views):
+            is_container_view = (view_name in container_views)
 
-            # Determine the items to be shown as reorderable. Note that the 'container_child_preview'
-            # is only rendered for containers that support ordering.
+            # Determine the items to be shown as reorderable. Note that the view
+            # 'reorderable_container_child_preview' is only rendered for xblocks that
+            # are being shown in a reorderable container, so the xblock is automatically
+            # added to the list.
             reorderable_items = set()
-            if view_name == 'container_child_preview':
+            if view_name == 'reorderable_container_child_preview':
                 reorderable_items.add(xblock.location)
 
             # Only show the new style HTML for the container view, i.e. for non-verticals

@@ -212,7 +212,7 @@ define(["jquery", "underscore", "gettext", "js/views/feedback_notification",
                 });
                 temporaryView = new TemporaryXBlockView({
                     model: xblockInfo,
-                    view: 'container_child_preview',
+                    view: 'reorderable_container_child_preview',
                     el: xblockElement
                 });
                 return temporaryView.render({
