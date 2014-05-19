@@ -28,7 +28,7 @@ from util.sandboxing import can_execute_unsafe_code
 
 import static_replace
 from .session_kv_store import SessionKeyValueStore
-from .helpers import render_from_lms
+from .helpers import render_from_lms, xblock_has_studio_page
 from ..utils import get_course_for_item
 
 from contentstore.views.access import get_user_role
@@ -192,22 +192,14 @@ def _studio_wrap_xblock(xblock, view, frag, context, display_name_only=False):
             'is_root': is_root,
             'is_reorderable': is_reorderable,
         }
-        if is_root or _studio_show_xblock_inline(xblock):
-            template = 'studio_xblock_wrapper.html'
-        else:
+        # For child xblocks with their own page, render a link to the page
+        if xblock_has_studio_page(xblock) and not is_root:
             template = 'studio_container_wrapper.html'
+        else:
+            template = 'studio_xblock_wrapper.html'
         html = render_to_string(template, template_context)
         frag = wrap_fragment(frag, html)
     return frag
-
-
-def _studio_show_xblock_inline(xblock):
-    """
-    Returns true if the xblock should be shown inline on the current page. If false, then
-    a link will be shown to the xblock instead.
-    """
-    # TODO: remove the special casing of verticals as being the only inline xblock
-    return not xblock.has_children or xblock.category == 'vertical'
 
 
 def get_preview_fragment(request, descriptor, context):

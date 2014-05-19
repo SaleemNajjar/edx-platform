@@ -27,6 +27,7 @@ class StudioPageTestCase(CourseTestCase):
         Returns the HTML for the page representing the xblock.
         """
         url = xblock_studio_url(xblock, self.course)
+        self.assertIsNotNone(url)
         resp = self.client.get_html(url)
         self.assertEqual(resp.status_code, 200)
         return resp.content
@@ -42,7 +43,7 @@ class StudioPageTestCase(CourseTestCase):
         resp_content = json.loads(resp.content)
         return resp_content['html']
 
-    def validate_preview_html(self, xblock, view_name, is_editable=True, can_add=True):
+    def validate_preview_html(self, xblock, view_name, can_edit=True, can_reorder=True, can_add=True):
         """
         Verify that the specified xblock's preview has the expected HTML elements.
         """
@@ -51,23 +52,22 @@ class StudioPageTestCase(CourseTestCase):
 
         # Verify that there are no drag handles for public blocks
         drag_handle_html = '<span data-tooltip="Drag to reorder" class="drag-handle action"></span>'
-        if is_editable:
+        if can_reorder:
             self.assertIn(drag_handle_html, html)
         else:
             self.assertNotIn(drag_handle_html, html)
 
         # Verify that there are no action buttons for public blocks
-        edit_button_html = '<a href="#" class="edit-button action-button">'
-        delete_button_html = '<a href="#" data-tooltip="Delete" class="delete-button action-button">'
-        duplicate_button_html = '<a href="#" data-tooltip="Duplicate" class="duplicate-button action-button">'
-        if is_editable:
-            self.assertIn(edit_button_html, html)
-            self.assertIn(delete_button_html, html)
-            self.assertIn(duplicate_button_html, html)
-        else:
-            self.assertNotIn(edit_button_html, html)
-            self.assertNotIn(delete_button_html, html)
-            self.assertNotIn(duplicate_button_html, html)
+        expected_button_html = [
+            '<a href="#" class="edit-button action-button">',
+            '<a href="#" data-tooltip="Delete" class="delete-button action-button">',
+            '<a href="#" data-tooltip="Duplicate" class="duplicate-button action-button">'
+        ]
+        for button_html in expected_button_html:
+            if can_edit:
+                self.assertIn(button_html, html)
+            else:
+                self.assertNotIn(button_html, html)
 
     def validate_html_for_add_buttons(self, html, can_add=True):
         """

@@ -38,7 +38,8 @@ class UnitPageTestCase(StudioPageTestCase):
         """
         Verify that a public xblock's preview returns the expected HTML.
         """
-        self.validate_preview_html(self.video, 'student_view', can_add=False)
+        self.validate_preview_html(self.video, 'student_view',
+                                   can_edit=True, can_reorder=True, can_add=False)
 
     def test_draft_component_preview_html(self):
         """
@@ -46,4 +47,31 @@ class UnitPageTestCase(StudioPageTestCase):
         """
         modulestore('draft').convert_to_draft(self.vertical.location)
         draft_video = modulestore('draft').convert_to_draft(self.video.location)
-        self.validate_preview_html(draft_video, 'student_view', can_add=False)
+        self.validate_preview_html(draft_video, 'student_view',
+                                   can_edit=True, can_reorder=True, can_add=False)
+
+    def test_public_child_container_preview_html(self):
+        """
+        Verify that a public child container rendering on the unit page (which shows a View arrow
+        to the container page) return the expected HTML.
+        """
+        child_container = ItemFactory.create(parent_location=self.vertical.location,
+                                             category='split_test', display_name='Split Test')
+        ItemFactory.create(parent_location=child_container.location,
+                           category='html', display_name='grandchild')
+        self.validate_preview_html(child_container, 'student_view',
+                                   can_reorder=True, can_edit=False, can_add=False)
+
+    def test_draft_child_container_preview_html(self):
+        """
+        Verify that a draft child container rendering on the unit page (which shows a View arrow
+        to the container page) return the expected HTML.
+        """
+        child_container = ItemFactory.create(parent_location=self.vertical.location,
+                                             category='split_test', display_name='Split Test')
+        ItemFactory.create(parent_location=child_container.location,
+                           category='html', display_name='grandchild')
+        modulestore('draft').convert_to_draft(self.vertical.location)
+        draft_child_container = modulestore('draft').get_item(child_container.location)
+        self.validate_preview_html(draft_child_container, 'student_view',
+                                   can_reorder=True, can_edit=False, can_add=False)

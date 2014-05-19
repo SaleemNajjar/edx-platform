@@ -33,7 +33,7 @@ from util.string_utils import str_to_bool
 from ..utils import get_modulestore
 
 from .access import has_course_access
-from .helpers import _xmodule_recurse
+from .helpers import _xmodule_recurse, xblock_has_studio_page
 from contentstore.utils import compute_publish_state, PublishState
 from xmodule.modulestore.draft import DIRECT_ONLY_CATEGORIES
 from contentstore.views.preview import get_preview_fragment
@@ -215,7 +215,7 @@ def xblock_view_handler(request, package_id, view_name, tag=None, branch=None, v
             # change not authored by requestor but by xblocks.
             store.update_item(xblock, None)
 
-        elif view_name == 'student_view' and xblock.has_children:
+        elif view_name == 'student_view' and xblock_has_studio_page(xblock):
             context = {
                 'runtime_type': 'studio',
                 'container_view': False,

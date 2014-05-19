@@ -13,11 +13,18 @@ class ContainerPageTestCase(StudioPageTestCase):
     Unit tests for the container page.
     """
 
+    container_view = 'container_preview'
+    reorderable_child_view = 'reorderable_container_child_preview'
+
     def setUp(self):
         super(ContainerPageTestCase, self).setUp()
         self.vertical = ItemFactory.create(parent_location=self.sequential.location,
                                            category='vertical', display_name='Unit')
-        self.child_vertical = ItemFactory.create(parent_location=self.vertical.location,
+        self.html = ItemFactory.create(parent_location=self.vertical.location,
+                                        category="html", display_name="HTML")
+        self.child_container = ItemFactory.create(parent_location=self.vertical.location,
+                                                  category='split_test', display_name='Split Test')
+        self.child_vertical = ItemFactory.create(parent_location=self.child_container.location,
                                                  category='vertical', display_name='Child Vertical')
         self.video = ItemFactory.create(parent_location=self.child_vertical.location,
                                         category="video", display_name="My Video")
@@ -25,16 +32,16 @@ class ContainerPageTestCase(StudioPageTestCase):
     def test_container_html(self):
         branch_name = "MITx.999.Robot_Super_Course/branch/draft/block"
         self._test_html_content(
-            self.child_vertical,
+            self.child_container,
             branch_name=branch_name,
             expected_section_tag=(
                 '<section class="wrapper-xblock level-page is-hidden studio-xblock-wrapper" '
-                'data-locator="{branch_name}/Child_Vertical">'.format(branch_name=branch_name)
+                'data-locator="{branch_name}/Split_Test">'.format(branch_name=branch_name)
             ),
             expected_breadcrumbs=(
                 r'<a href="/unit/{branch_name}/Unit"\s*'
                 r'class="navigation-link navigation-parent">Unit</a>\s*'
-                r'<a href="#" class="navigation-link navigation-current">Child Vertical</a>'
+                r'<a href="#" class="navigation-link navigation-current">Split Test</a>'
             ).format(branch_name=branch_name)
         )
 
@@ -44,7 +51,7 @@ class ContainerPageTestCase(StudioPageTestCase):
         This should create a container page that is a child of another container page.
         """
         published_container = ItemFactory.create(
-            parent_location=self.child_vertical.location,
+            parent_location=self.child_container.location,
             category="wrapper", display_name="Wrapper"
         )
         ItemFactory.create(
@@ -62,8 +69,8 @@ class ContainerPageTestCase(StudioPageTestCase):
             expected_breadcrumbs=(
                 r'<a href="/unit/{branch_name}/Unit"\s*'
                 r'class="navigation-link navigation-parent">Unit</a>\s*'
-                r'<a href="/container/{branch_name}/Child_Vertical"\s*'
-                r'class="navigation-link navigation-parent">Child Vertical</a>\s*'
+                r'<a href="/container/{branch_name}/Split_Test"\s*'
+                r'class="navigation-link navigation-parent">Split Test</a>\s*'
                 r'<a href="#" class="navigation-link navigation-current">Wrapper</a>'
             ).format(branch_name=branch_name)
         )
@@ -82,8 +89,8 @@ class ContainerPageTestCase(StudioPageTestCase):
             expected_breadcrumbs=(
                 r'<a href="/unit/{branch_name}/Unit"\s*'
                 r'class="navigation-link navigation-parent">Unit</a>\s*'
-                r'<a href="/container/{branch_name}/Child_Vertical"\s*'
-                r'class="navigation-link navigation-parent">Child Vertical</a>\s*'
+                r'<a href="/container/{branch_name}/Split_Test"\s*'
+                r'class="navigation-link navigation-parent">Split Test</a>\s*'
                 r'<a href="#" class="navigation-link navigation-current">Wrapper</a>'
             ).format(branch_name=branch_name)
         )
@@ -114,15 +121,47 @@ class ContainerPageTestCase(StudioPageTestCase):
         """
         Verify that a public xblock's container preview returns the expected HTML.
         """
-        self.validate_preview_html(self.vertical, 'container_preview', is_editable=False, can_add=False)
-        self.validate_preview_html(self.child_vertical, 'reorderable_container_child_preview',
-                                   is_editable=False, can_add=False)
+        self.validate_preview_html(self.vertical, self.container_view,
+                                   can_edit=False, can_reorder=False, can_add=False)
+        self.validate_preview_html(self.child_container, self.container_view,
+                                   can_edit=False, can_reorder=False, can_add=False)
+        self.validate_preview_html(self.child_vertical, self.reorderable_child_view,
+                                   can_edit=False, can_reorder=False, can_add=False)
 
     def test_draft_container_preview_html(self):
         """
         Verify that a draft xblock's container preview returns the expected HTML.
         """
         draft_unit = modulestore('draft').convert_to_draft(self.vertical.location)
-        draft_container = modulestore('draft').convert_to_draft(self.child_vertical.location)
-        self.validate_preview_html(draft_unit, 'container_preview')
-        self.validate_preview_html(draft_container, 'reorderable_container_child_preview')
+        draft_child_container = modulestore('draft').convert_to_draft(self.child_container.location)
+        draft_child_vertical = modulestore('draft').convert_to_draft(self.child_vertical.location)
+        self.validate_preview_html(draft_unit, self.container_view,
+                                   can_edit=True, can_reorder=True, can_add=True)
+        self.validate_preview_html(draft_child_container, self.container_view,
+                                   can_edit=True, can_reorder=True, can_add=True)
+        self.validate_preview_html(draft_child_vertical, self.reorderable_child_view,
+                                   can_edit=True, can_reorder=True, can_add=True)
+
+    def test_public_child_container_preview_html(self):
+        """
+        Verify that a public container rendered as a child of the container page returns the expected HTML.
+        """
+        empty_child_container = ItemFactory.create(parent_location=self.vertical.location,
+                                                   category='split_test', display_name='Split Test')
+        ItemFactory.create(parent_location=empty_child_container.location,
+                           category='html', display_name='Split Child')
+        self.validate_preview_html(empty_child_container, self.reorderable_child_view,
+                                   can_reorder=False, can_edit=False, can_add=False)
+
+    def test_draft_child_container_preview_html(self):
+        """
+        Verify that a draft container rendered as a child of the container page returns the expected HTML.
+        """
+        empty_child_container = ItemFactory.create(parent_location=self.vertical.location,
+                                                   category='split_test', display_name='Split Test')
+        ItemFactory.create(parent_location=empty_child_container.location,
+                           category='html', display_name='Split Child')
+        modulestore('draft').convert_to_draft(self.vertical.location)
+        draft_empty_child_container = modulestore('draft').convert_to_draft(empty_child_container.location)
+        self.validate_preview_html(draft_empty_child_container, self.reorderable_child_view,
+                                   can_reorder=True, can_edit=False, can_add=False)

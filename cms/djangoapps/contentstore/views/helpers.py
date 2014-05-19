@@ -59,33 +59,41 @@ def get_parent_xblock(xblock):
     return modulestore().get_item(parent_locations[0])
 
 
-def _xblock_has_studio_page(xblock):
+def xblock_has_studio_page(xblock):
     """
     Returns true if the specified xblock has an associated Studio page. Most xblocks do
     not have their own page but are instead shown on the page of their parent. There
     are a few exceptions:
       1. Courses
-      2. Verticals
+      2. Verticals that are considered unit pages, i.e. are parented beneath a sequential
       3. XBlocks with children, except for:
           - subsections (aka sequential blocks)
           - chapters
     """
     category = xblock.category
-    if category in ('course', 'vertical'):
+    if category == 'course':
         return True
     elif category in ('sequential', 'chapter'):
         return False
-    elif xblock.has_children:
-        return True
-    else:
-        return False
+
+    # Only verticals beneath a sequential are given their own page
+    if category == 'vertical':
+        parent_xblock = get_parent_xblock(xblock)
+        if parent_xblock:
+            parent_category = parent_xblock.category
+        else:
+            parent_category = None
+        return parent_category == 'sequential'
+
+    # All other xblocks with children have their own page
+    return xblock.has_children
 
 
 def xblock_studio_url(xblock, course=None):
     """
     Returns the Studio editing URL for the specified xblock.
     """
-    if not _xblock_has_studio_page(xblock):
+    if not xblock_has_studio_page(xblock):
         return None
     category = xblock.category
     parent_xblock = get_parent_xblock(xblock)
