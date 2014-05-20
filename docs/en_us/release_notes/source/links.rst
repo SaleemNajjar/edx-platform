@@ -175,6 +175,8 @@
 
 .. _Data Czar/Data Team Selection and Responsibilities: http://edx.readthedocs.org/projects/devdata/en/latest/internal_data_formats/data_czar.html
 
+.. _event list: http://edx.readthedocs.org/projects/devdata/en/latest/internal_data_formats/event_list.html#event-list
+
 .. Developer Doc
 
 .. _Contributing to Open edX: http://edx.readthedocs.org/projects/userdocs/en/latest/process/index.html

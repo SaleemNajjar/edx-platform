@@ -8,8 +8,8 @@ The following information reflects what is new in the edX Platform as of May 20,
 
  These edX Course Staff Release Notes are always available and are updated with
  each release of the edX Platform on `edx.org`_ and `edX Edge`_.  You can also
- sign up for the edX Release Announcements mailing list [LINK TBP], to get an email message
- when there is a new release. 
+ sign up for the edX Release Announcements mailing list [LINK TBP] to get an
+ email message when there is a new release.
 
 **************************
 edX Documentation
@@ -37,15 +37,14 @@ The following documentation is available:
   
   Recent changes include:
 
-  
+  * Added an `event list`_ to the `Tracking Logs`_ section.
+  * Updated the `Tracking Logs`_ chapter to provide a standardized structure
+    for delivering information about events and address problems with table
+    formatting.
   
 
 * `edX Platform Developer Documentation`_
 
-   Recent changes include: 
-
-   
-  
   
 * `edX XBlock Documentation`_
 
@@ -69,25 +68,20 @@ edX Studio
    :alt: A Studio online help page
 
 
-  You can also expand the panel at the bottom of the page and use the links at
-  to access a PDF file of edX course staff documentation, as well as and other
-  Studio resources.
+  You can also expand the panel at the bottom of Studio user interface and use
+  the links to access a PDF file of edX course staff documentation, edX Studio
+  Author Support, and edX101.
 
   .. image:: /images/sock_help.png
    :alt: Other help resources at the bottom of the Studio UI
 
 
-***************************************
-edX Learning Management System
-***************************************
+* A problem that caused the video transcript download button to not work for
+  students is fixed. If this was a problem in your course, you must re-import
+  the course in Studio. (BLD-1014)
 
-* 
+* (STUD-1595)
 
 
-****************
-edX Analytics
-****************
-
-* 
 
 .. include:: links.rst
